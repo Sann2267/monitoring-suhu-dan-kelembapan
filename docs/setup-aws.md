@@ -33,7 +33,7 @@ ssh -i flask.pem ubuntu@<IP_ADDRESS>
 ```
 
 *(Catatan: `<IP_ADDRESS>` bisa diisi dengan Public IP jika diakses dari luar jaringan AWS, atau Private IP jika diakses dari dalam jaringan/VPC yang sama. `ubuntu` adalah default username untuk OS Ubuntu).*
-```
+
 
 
 ## 2. Konfigurasi IP Address
