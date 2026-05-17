@@ -1,0 +1,7 @@
+# Arduino secrets
+secrets.h
+
+# Build files
+*.bin
+*.elf
+*.map
