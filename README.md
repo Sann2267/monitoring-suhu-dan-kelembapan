@@ -42,6 +42,7 @@ Project ini cocok digunakan sebagai contoh penerapan Internet of Things, Cloud C
 
 ## Arsitektur Sistem
 
+![Arsitektur Sistem](images/architecture.png)
 ```text
 Sensor DHT22
         |
@@ -65,4 +66,3 @@ Dashboard Monitoring Real-Time
 
 ## Arsitektur Sistem
 ```
-![Arsitektur Sistem](images/architecture.png)
