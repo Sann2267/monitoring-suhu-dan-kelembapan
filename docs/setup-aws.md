@@ -1,5 +1,5 @@
 # Dokumentasi Setup AWS
----
+
 ## 1. Kredensial & Autentikasi (Key Pair)
 **Key Pair** adalah kredensial keamanan utama yang digunakan untuk autentikasi yang aman saat mengakses instance Amazon EC2 (Virtual Machine) secara *remote* melalui protokol SSH.
 
@@ -33,7 +33,7 @@ ssh -i flask.pem ubuntu@<IP_ADDRESS>
 
 
 *(Catatan: `<IP_ADDRESS>` bisa diisi dengan Public IP jika diakses dari luar jaringan AWS, atau Private IP jika diakses dari dalam jaringan/VPC yang sama. `ubuntu` adalah default username untuk OS Ubuntu).*
-
+```
 ---
 
 ## 2. Konfigurasi IP Address
@@ -91,9 +91,3 @@ Integrasi S3 sebagai sistem file *(file system)*:
 
 * **EC2 Instance Connect Endpoint (EICE)**: `eice-0e37708774190f429`
 *(Digunakan untuk terhubung ke instance melalui SSH menggunakan private IP tanpa perlu mengekspos instance ke public internet).*
-
-```
-
-***
-
-```
