@@ -1,4 +1,3 @@
-```
 # Dokumentasi Setup AWS
 
 ## 1. Kredensial & Autentikasi (Key Pair)
@@ -32,7 +31,6 @@ Berikut adalah perintah-perintah dasar untuk mengelola *private key* (`flask.pem
 ```bash
 ssh -i flask.pem ubuntu@<IP_ADDRESS>
 
-```
 
 *(Catatan: `<IP_ADDRESS>` bisa diisi dengan Public IP jika diakses dari luar jaringan AWS, atau Private IP jika diakses dari dalam jaringan/VPC yang sama. `ubuntu` adalah default username untuk OS Ubuntu).*
 
