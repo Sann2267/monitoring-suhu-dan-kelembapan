@@ -11,7 +11,7 @@ Berikut adalah perintah-perintah dasar untuk mengelola *private key* (`flask.pem
     ```bash
     ls -la flask.pem
     ```
-    *Output contoh: `-rw-r--r-- 1 Ibnu 197121 1674 Apr 14 14:26 flask.pem`*
+    *Output contoh: `-rw-r--r-- 1 Liewzz 197121 1674 Apr 14 14:26 flask.pem`*
     *Fungsi: Menampilkan detail file termasuk hak akses (permission), pemilik, dan ukuran file. (Perintah ini spesifik untuk environment Linux/Unix/Git Bash).*
 
 * **Mengubah Hak Akses (Permissions)**
@@ -87,6 +87,8 @@ Integrasi S3 sebagai sistem file *(file system)*:
 * **ARN (Amazon Resource Name)**: `arn:aws:s3files:ap-southeast-2:171643300383:file-system/fs-01dec2fe4e2358e5f`
 *(ARN berfungsi sebagai pengidentifikasi unik berstandar AWS untuk melacak atau memanggil sumber daya/resource secara spesifik di seluruh ekosistem cloud).*
 
+---
+
 ## 5. Endpoint Layanan
 
 * **EC2 Instance Connect Endpoint (EICE)**: `eice-0e37708774190f429`
@@ -95,3 +97,5 @@ Integrasi S3 sebagai sistem file *(file system)*:
 ```
 
 ***
+
+```
