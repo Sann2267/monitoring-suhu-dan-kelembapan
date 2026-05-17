@@ -1,4 +1,4 @@
-```markdown
+```
 # Dokumentasi Setup AWS
 
 ## 1. Kredensial & Autentikasi (Key Pair)
