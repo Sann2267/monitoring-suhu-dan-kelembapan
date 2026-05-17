@@ -43,10 +43,10 @@ Project ini cocok digunakan sebagai contoh penerapan Internet of Things, Cloud C
 ## Arsitektur Sistem
 
 ```text
-Sensor DHT11/DHT22
+Sensor DHT22
         |
         v
-ESP32 / ESP8266
+ESP32 
         |
         v
 WiFi / Internet
