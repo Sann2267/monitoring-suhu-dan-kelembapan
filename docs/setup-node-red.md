@@ -23,9 +23,9 @@ Sebelum menginstal aplikasi di server, pastikan AWS Firewall mengizinkan akses k
 ## 2. Login ke Server EC2 via SSH
 1. Buka terminal (PowerShell / Git Bash / Command Prompt) di laptopmu.
 2. Masuk ke direktori tempat file `.pem` disimpan (contoh: folder Downloads).
-   ```bash
+ ```bash
    cd Downloads
-   ```
+ ```
 
 
 3. Lakukan SSH ke server menggunakan *Public IP* atau *Elastic IP* milikmu:
