@@ -62,3 +62,7 @@ Node-RED
         |
         v
 Dashboard Monitoring Real-Time
+
+## Arsitektur Sistem
+```
+![Arsitektur Sistem](images/architecture.png)
