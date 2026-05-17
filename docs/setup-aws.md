@@ -1,93 +1,146 @@
-# Dokumentasi Setup AWS
+# Panduan Setup AWS EC2 untuk IoT Monitoring
 
-## 1. Kredensial & Autentikasi (Key Pair)
-**Key Pair** adalah kredensial keamanan utama yang digunakan untuk autentikasi yang aman saat mengakses instance Amazon EC2 (Virtual Machine) secara *remote* melalui protokol SSH.
-
-### Manajemen Key Pair
-Berikut adalah perintah-perintah dasar untuk mengelola *private key* (`flask.pem`) dan *public key* (`flask.pub`):
-
-* **Melihat Detail File Key**
-    ```bash
-    ls -la flask.pem
-    ```
-    *Output contoh: `-rw-r--r-- 1 Liewzz 197121 1674 Apr 14 14:26 flask.pem`*
-    *Fungsi: Menampilkan detail file termasuk hak akses (permission), pemilik, dan ukuran file. (Perintah ini spesifik untuk environment Linux/Unix/Git Bash).*
-
-* **Mengubah Hak Akses (Permissions)**
-    ```bash
-    chmod 400 flask.pem
-    ```
-    *Fungsi: Mengamankan private key. Angka `400` berarti file ini berstatus *read-only* (hanya bisa dibaca) dan murni hanya pemilik file yang memiliki akses tersebut. AWS mewajibkan pengaturan ini agar key tidak bisa diakses oleh *user* lain di komputer yang sama.*
-
-* **Mengekstrak Public Key**
-    ```bash
-    ssh-keygen -y -f flask.pem > flask.pub
-    ```
-    *Fungsi: Menghasilkan/mengekstrak *public key* (`flask.pub`) berdasarkan *private key* (`flask.pem`) yang sudah ada.*
-    * `-y` : Membaca file private key dan mencetak public key-nya.
-    * `-f` : Menentukan lokasi/nama file private key yang akan dibaca.
-
-### Cara Melakukan SSH ke Instance
-```bash
-ssh -i flask.pem ubuntu@<IP_ADDRESS>
-```
-
-*(Catatan: `<IP_ADDRESS>` bisa diisi dengan Public IP jika diakses dari luar jaringan AWS, atau Private IP jika diakses dari dalam jaringan/VPC yang sama. `ubuntu` adalah default username untuk OS Ubuntu).*
-
-
-
-## 2. Konfigurasi IP Address
-
-Berikut adalah daftar IP yang digunakan dalam environment ini:
-
-* **IP Amazon (untuk SSH)**: `16.176.170.94` *(Elastic IP / Public IP spesifik)*
-* **Public IP EC2**: `52.63.74.223` *(IP yang bisa diakses dari internet)*
-* **Private IP EC2**: `172.31.13.190` *(IP internal di dalam VPC AWS)*
-* **IP Komputer Lokal (User)**: `103.47.134.76`
+## 1. Masuk ke AWS Console
+1. Buka AWS Console dan login ke akun AWS kamu.
+2. Cari layanan **EC2** di kolom pencarian atas. EC2 (Elastic Compute Cloud) adalah *virtual server* di AWS. Node-RED dan MQTT broker kamu akan berjalan di dalam server virtual ini. 
+3. Pastikan **Region** kamu sudah benar (pojok kanan atas). Pilih region yang terdekat atau sesuai kebutuhan, misalnya `ap-southeast-2` (Sydney) atau `ap-southeast-1` (Singapore). Pastikan kamu konsisten menggunakan satu region ini hingga akhir.
 
 ---
 
-## 3. Pengaturan Jaringan & Firewall
-
-### Subnet (Jaringan Internal)
-
-* **CIDR Block**: `172.31.0.0/20` (Berada di IP Class B)
-* **Kapasitas Host**: Menyediakan hingga 4091 alamat IP yang tersedia untuk *resource* AWS di dalam subnet ini.
-
-### Security Group (Firewall)
-
-Pengaturan *Inbound Rules* (aturan masuk) untuk membatasi akses ke server:
-
-* **Tipe**: SSH
-* **Protokol**: TCP
-* **Rentang Port**: 22 (Port default SSH)
-* **Tipe Sumber**: Custom
-* **Sumber (Source)**: `192.168.20.0/24`
-*(Hanya mengizinkan akses masuk dari rentang IP Class C ini yang memiliki total 254 host).*
+## 2. Buat Instance Baru
+1. Di *dashboard* EC2, klik tombol **Launch instance**.
+2. Pada bagian **Name and tags**, beri label nama agar server mudah dikenali. Contoh: `iot-monitoring-server`.
+3. Pada bagian **Application and OS Images (AMI)**, pilih **Amazon Linux 2023 AMI**. Pilih versi standar/default (bukan yang minimal). Sistem operasi ini dioptimalkan khusus oleh AWS untuk berjalan di lingkungan EC2.
 
 ---
 
-## 4. Sistem File & Penyimpanan (S3)
-
-**Amazon S3 (Simple Storage Service)** adalah layanan *Object Storage*, yaitu tempat menyimpan data dalam bentuk objek (seperti file, gambar, video, atau *backup*) di dalam sebuah wadah logis yang disebut **Bucket**. Data di S3 dapat diakses kapan saja melalui API atau URL.
-
-### Detail Bucket
-
-* **Nama Bucket**: `s3://flaskbuckets01`
-*(Nama bucket bersifat unik secara global di seluruh AWS dan memiliki kapasitas penyimpanan yang hampir tak terbatas).*
-
-### Konfigurasi Sistem File S3
-
-Integrasi S3 sebagai sistem file *(file system)*:
-
-* **File System ID**: `fs-01dec2fe4e2358e5f`
-* **Tags**: `Key: flask`, `Value: fs-flaskbuckets01-1776154684741`
-* **ARN (Amazon Resource Name)**: `arn:aws:s3files:ap-southeast-2:171643300383:file-system/fs-01dec2fe4e2358e5f`
-*(ARN berfungsi sebagai pengidentifikasi unik berstandar AWS untuk melacak atau memanggil sumber daya/resource secara spesifik di seluruh ekosistem cloud).*
+## 3. Pilih Instance Type
+Pilih spesifikasi *hardware* (Instance type) yang sesuai:
+* Pilih **t2.micro** (atau **t3.micro** jika t2 tidak tersedia).
+* Spesifikasi ini sudah sangat cukup untuk menjalankan *project* monitoring suhu dan kelembapan, dan biasanya masuk dalam cakupan *Free Tier* AWS.
 
 ---
 
-## 5. Endpoint Layanan
+## 4. Konfigurasi Key Pair
+*Key pair* berfungsi sebagai kredensial keamanan utama (pengganti *password*) untuk membuktikan identitas saat kamu melakukan *remote login* (SSH) ke server Linux.
 
-* **EC2 Instance Connect Endpoint (EICE)**: `eice-0e37708774190f429`
-*(Digunakan untuk terhubung ke instance melalui SSH menggunakan private IP tanpa perlu mengekspos instance ke public internet).*
+1. Pada bagian **Key pair**, pilih **Create new key pair** jika belum punya.
+2. Isi detail berikut:
+   * **Key pair name**: `iot-monitoring-key`
+   * **Key pair type**: `RSA`
+   * **Private key file format**: `.pem`
+3. Klik **Create key pair**.
+4. File `.pem` akan otomatis terunduh. Simpan file ini di lokasi yang aman. **Peringatan: Jangan pernah mengunggah file `.pem` ini ke GitHub publik!**
+
+---
+
+## 5. Buat Security Group (Firewall)
+*Security Group* berfungsi mengatur *traffic* jaringan apa saja yang boleh masuk (*inbound*) dan keluar (*outbound*) dari server kamu.
+
+1. Pada bagian **Network settings**, klik **Edit**.
+2. Konfigurasikan pengaturan jaringan dasar:
+   * **VPC**: Default VPC
+   * **Subnet**: No preference (Default)
+   * **Auto-assign public IP**: Enable
+3. Pilih **Create security group**.
+4. Beri nama **Security group name**: `sg-iot-monitoring`.
+5. Beri **Description**: `Security group for IoT monitoring with SSH, MQTT, and Node-RED`.
+
+---
+
+## 6. Pengaturan Inbound Rules
+Tambahkan aturan jaringan masuk berikut. Pastikan untuk menyesuaikan kolom *Source* demi keamanan:
+
+| Type | Protocol | Port Range | Source | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| **SSH** | TCP | 22 | My IP | Akses SSH untuk remote server dari laptop lokal. (Penting: Hindari `0.0.0.0/0` untuk SSH). |
+| **Custom TCP** | TCP | 1880 | My IP | Akses ke Editor Node-RED dari browser (`http://IP:1880`). |
+| **Custom TCP** | TCP | 1883 | 0.0.0.0/0 | Akses ke MQTT broker untuk ESP32/IoT device. Diatur publik agar device dari jaringan berbeda bisa masuk. |
+
+*(Catatan Keamanan MQTT: Karena port 1883 dibuka ke publik, pastikan di tahap selanjutnya kamu mengatur username/password pada konfigurasi Mosquitto MQTT).*
+
+---
+
+## 7. Pengaturan Outbound Rules
+Biarkan konfigurasi keluar (*outbound*) pada pengaturan *default*:
+* **Type**: All traffic
+* **Destination**: `0.0.0.0/0`
+*Artinya, server diizinkan untuk mengakses internet luar, yang diperlukan untuk mengunduh package, install Node.js, Node-RED, dan pembaruan sistem.*
+
+---
+
+## 8. Konfigurasi Storage
+Biarkan pada pengaturan *default*:
+* **Ukuran**: 8 GiB
+* **Tipe**: gp3
+*(Kapasitas 8 GB sudah lebih dari cukup untuk sistem operasi, Node-RED, Mosquitto, dan kode project IoT sederhana).*
+
+---
+
+## 9. Launch Instance & Cek Status
+1. Klik tombol **Launch instance** di pojok kanan bawah.
+2. Setelah sukses, klik **View all instances**.
+3. Pastikan server kamu telah menyala dengan mengecek dua indikator ini:
+   * **Instance state**: `Running`
+   * **Status checks**: `2/2 checks passed`
+*(Jika status belum 2/2, tunggu 1-2 menit hingga proses booting selesai sebelum mencoba login).*
+
+---
+
+## 10. Mengidentifikasi Public IP Awal
+Klik pada *Instance* kamu yang sedang berjalan, lalu cari bagian **Public IPv4 address** di panel detail bawah (Contoh: `13.xxx.xxx.xxx`). Ini adalah IP publik dinamis awal sebelum kita menguncinya menggunakan Elastic IP pada langkah berikutnya.
+
+---
+
+## 11. Alokasi dan Asosiasi Elastic IP (Sangat Direkomendasikan untuk IoT)
+Secara default, AWS akan mengubah Public IP EC2 kamu setiap kali server dimatikan (*Stop*) dan dinyalakan kembali (*Start*). Fitur **Elastic IP** digunakan untuk mengunci sebuah IP publik statis agar tidak berubah-ubah, sehingga kamu tidak perlu mengedit ulang kode C++ pada ESP32 setiap kali server di-restart.
+
+### Langkah Alokasi IP Statis:
+1. Pada menu sebelah kiri dasbor EC2, gulir ke bawah ke bagian **Network & Security**, lalu klik **Elastic IPs**.
+2. Klik tombol **Allocate Elastic IP address** di pojok kanan atas.
+3. Biarkan pengaturan jaringan pada pilihan default (*Amazon's pool of IPv4 addresses*), lalu klik **Allocate** di bagian bawah.
+
+### Langkah Menghubungkan IP ke EC2:
+1. Pilih alamat Elastic IP yang baru saja kamu buat dari daftar.
+2. Klik menu drop-down **Actions** di pojok kanan atas, lalu pilih **Associate Elastic IP address**.
+3. Pada bagian **Resource type**, pilih **Instance**.
+4. Pada kolom **Instance**, klik dan pilih nama server kamu (`iot-monitoring-server`).
+5. Pada kolom **Private IP address**, pilih alamat IP internal yang muncul otomatis.
+6. Klik **Associate**.
+
+*Catatan: Mulai saat ini, gunakan alamat Elastic IP baru ini sebagai Endpoint utama untuk semua koneksi luar.*
+
+---
+
+## 12. Daftar Endpoint Layanan (Menggunakan Elastic IP)
+Ganti `<ELASTIC_IP>` di bawah ini dengan alamat Elastic IP statis yang sudah kamu dapatkan:
+
+* **Terminal SSH**: `ec2-user@<ELASTIC_IP>`
+* **Node-RED Editor**: `http://<ELASTIC_IP>:1880`
+* **Node-RED Dashboard**: `http://<ELASTIC_IP>:1880/ui`
+* **MQTT Broker**: `<ELASTIC_IP>` (pada Port 1883)
+
+---
+
+## 13. Connect ke Instance melalui SSH
+Jika kamu menggunakan OS Windows:
+1. Buka PowerShell atau Git Bash di dalam folder tempat file `.pem` tersimpan.
+2. Jalankan perintah SSH berikut (ganti dengan Elastic IP milikmu):
+   ```bash
+   ssh -i iot-monitoring-key.pem ec2-user@<ELASTIC_IP>
+
+3. Jika muncul konfirmasi *Are you sure you want to continue connecting?*, ketik `yes` lalu tekan Enter.
+4. Jika berhasil, *prompt* terminal akan berubah menjadi `[ec2-user@ip-xxx-xxx-xxx-xxx ~]$`.
+
+---
+
+## 14. Checklist Validasi AWS
+
+Sebelum melanjutkan instalasi Node-RED dan Mosquitto, pastikan semua item ini sudah terpenuhi:
+
+* [x] Instance menggunakan Amazon Linux 2023.
+* [x] Instance state "Running" dan Status checks "2/2 passed".
+* [x] Elastic IP telah sukses dialokasikan dan diasosiasikan ke instance.
+* [x] Security Group membuka port 22 (SSH), 1880 (Node-RED), dan 1883 (MQTT).
+* [x] File Key Pair `.pem` tersimpan dengan aman di lokal.
+* [x] Berhasil masuk (SSH) ke dalam server sebagai `ec2-user` menggunakan Elastic IP.
