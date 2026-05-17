@@ -43,26 +43,3 @@ Project ini cocok digunakan sebagai contoh penerapan Internet of Things, Cloud C
 ## Arsitektur Sistem
 
 ![Arsitektur Sistem](images/architecture.png)
-```text
-Sensor DHT22
-        |
-        v
-ESP32 
-        |
-        v
-WiFi / Internet
-        |
-        v
-AWS EC2 Server
-        |
-        v
-Mosquitto MQTT Broker
-        |
-        v
-Node-RED
-        |
-        v
-Dashboard Monitoring Real-Time
-
-## Arsitektur Sistem
-```
