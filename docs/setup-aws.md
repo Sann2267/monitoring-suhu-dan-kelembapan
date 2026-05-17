@@ -1,5 +1,5 @@
 # Dokumentasi Setup AWS
-
+---
 ## 1. Kredensial & Autentikasi (Key Pair)
 **Key Pair** adalah kredensial keamanan utama yang digunakan untuk autentikasi yang aman saat mengakses instance Amazon EC2 (Virtual Machine) secara *remote* melalui protokol SSH.
 
