@@ -25,7 +25,7 @@ Sebelum menginstal aplikasi di server, pastikan AWS Firewall mengizinkan akses k
 2. Masuk ke direktori tempat file `.pem` disimpan (contoh: folder Downloads).
    ```bash
    cd Downloads
-
+   ```
 
 
 3. Lakukan SSH ke server menggunakan *Public IP* atau *Elastic IP* milikmu:
