@@ -87,8 +87,6 @@ Integrasi S3 sebagai sistem file *(file system)*:
 * **ARN (Amazon Resource Name)**: `arn:aws:s3files:ap-southeast-2:171643300383:file-system/fs-01dec2fe4e2358e5f`
 *(ARN berfungsi sebagai pengidentifikasi unik berstandar AWS untuk melacak atau memanggil sumber daya/resource secara spesifik di seluruh ekosistem cloud).*
 
----
-
 ## 5. Endpoint Layanan
 
 * **EC2 Instance Connect Endpoint (EICE)**: `eice-0e37708774190f429`
@@ -97,5 +95,3 @@ Integrasi S3 sebagai sistem file *(file system)*:
 ```
 
 ***
-
-```
