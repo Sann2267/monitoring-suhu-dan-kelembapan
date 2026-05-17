@@ -1,1 +1,264 @@
-
+[
+    {
+        "id": "717fd9a1f7321db2",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "9d4be374ba368e02",
+        "type": "mysql",
+        "z": "717fd9a1f7321db2",
+        "mydb": "eec8cc3a62141a58",
+        "name": "",
+        "x": 660,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "120f6bc43ae1cf1d",
+        "type": "ui_chart",
+        "z": "717fd9a1f7321db2",
+        "name": "",
+        "group": "b19fb36a6887804a",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "label": "Suhu Sensor",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "100",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 670,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e460192d12c6ab7f",
+        "type": "ui_gauge",
+        "z": "717fd9a1f7321db2",
+        "name": "",
+        "group": "b19fb36a6887804a",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Suhu",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "30",
+        "seg2": "60",
+        "diff": false,
+        "className": "",
+        "x": 650,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "c26d8f0b59f13e51",
+        "type": "ui_text",
+        "z": "717fd9a1f7321db2",
+        "group": "b19fb36a6887804a",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Suhu sekarang",
+        "format": "{{msg.payload}} °C",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 680,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "52b3d66234214736",
+        "type": "function",
+        "z": "717fd9a1f7321db2",
+        "name": "function 2",
+        "func": "msg.payload = Number(msg.payload.suhu);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 260,
+        "wires": [
+            [
+                "120f6bc43ae1cf1d",
+                "e460192d12c6ab7f",
+                "c26d8f0b59f13e51"
+            ]
+        ]
+    },
+    {
+        "id": "b8c2bf06c4904091",
+        "type": "function",
+        "z": "717fd9a1f7321db2",
+        "name": "function 1",
+        "func": "msg.topic = \"INSERT INTO data_sensor (suhu, kelembapan) VALUES (?, ?)\";\nmsg.payload = [Number(msg.payload.suhu), Number(msg.payload.kelembapan)];\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 180,
+        "wires": [
+            [
+                "9d4be374ba368e02"
+            ]
+        ]
+    },
+    {
+        "id": "14d3f12342928060",
+        "type": "json",
+        "z": "717fd9a1f7321db2",
+        "name": "",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 290,
+        "y": 220,
+        "wires": [
+            [
+                "b8c2bf06c4904091",
+                "52b3d66234214736"
+            ]
+        ]
+    },
+    {
+        "id": "f7a3dcdab0d0613e",
+        "type": "mqtt in",
+        "z": "717fd9a1f7321db2",
+        "name": "",
+        "topic": "sensor/data",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "2fe6b5ce975df366",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 130,
+        "y": 220,
+        "wires": [
+            [
+                "14d3f12342928060"
+            ]
+        ]
+    },
+    {
+        "id": "eec8cc3a62141a58",
+        "type": "MySQLdatabase",
+        "name": "Database",
+        "host": "sensor-db.c5soc822uogm.ap-southeast-2.rds.amazonaws.com",
+        "port": "3306",
+        "db": "sensor_db",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "b19fb36a6887804a",
+        "type": "ui_group",
+        "name": "Data Sensor",
+        "tab": "86e495a76448d9b7",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "2fe6b5ce975df366",
+        "type": "mqtt-broker",
+        "name": "mqtt2",
+        "broker": "10.0.13.252",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "86e495a76448d9b7",
+        "type": "ui_tab",
+        "name": "Monitoring Sensor",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "7c784c9574f66162",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-mysql": "3.0.0",
+            "node-red-dashboard": "3.6.6"
+        }
+    }
+]
