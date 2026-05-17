@@ -115,7 +115,7 @@ mosquitto -v
 
 > **Saran saya:** Sebelum mengetes, anda harus mengkonfigurasi kan mosquitto nya terlebih dahulu agar dapat diakses dari luar, seperti dari mosquitto di komputer lain atau bahkan IoT ESP32, ini penting!!!
 
-**12. Buat config file** *(Catatan: saya perbaiki penomorannya dari 11 menjadi 12)*
+**12. Buat config file**
 
 ```bash
 sudo nano /etc/mosquitto.conf
