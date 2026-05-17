@@ -1,5 +1,3 @@
----
-
 ```markdown
 # Dokumentasi Setup AWS
 
