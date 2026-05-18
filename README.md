@@ -1,6 +1,6 @@
 # Monitoring Suhu dan Kelembapan Real-Time Berbasis AWS dan Node-RED
 
-Project ini adalah sistem monitoring suhu dan kelembapan secara real-time menggunakan sensor DHT, mikrokontroler ESP32/ESP8266, MQTT Broker di AWS EC2, dan dashboard Node-RED.
+Project ini adalah sistem monitoring suhu dan kelembapan secara real-time menggunakan sensor DHT, mikrokontroler ESP32, MQTT Broker di AWS EC2, dan dashboard Node-RED.
 
 Data suhu dan kelembapan dibaca oleh sensor, lalu dikirim melalui jaringan WiFi ke MQTT Broker yang berjalan di server AWS EC2. Setelah itu, Node-RED menerima data tersebut dan menampilkannya dalam bentuk dashboard real-time.
 
